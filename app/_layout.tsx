@@ -6,6 +6,6 @@ export default function RootLayout() {
       Sprintura: require("../assets/font/LTInternet-Regular.ttf"),
     });
   
-    if (!fontsLoaded) return null;
+  if (!fontsLoaded) return null;
   return <Stack screenOptions={{headerShown: false}}/>;
 }

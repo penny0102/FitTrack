@@ -73,6 +73,27 @@ export default function Index() {
                 </Text>
               </View>
           </View>
+          <View style={styles.progracessStyle}>
+              
+              <Text style={{paddingTop: 2, color: "#9b9b9b"}}>
+                Daily Goal Progress
+              </Text>
+              <View style={{flexDirection: "row", gap: 7}}>
+                <Text style={{fontSize: 30, color: "#d4d4d4"}}>
+                  100% Achieved
+                </Text>
+                
+                  
+              </View>
+              <View style={{paddingTop: 5}}>
+                  <Progress.Bar
+                  progress={1}
+                  width={300}
+                  height={15}
+                  color="#22C55E"
+                />
+                </View>
+          </View>
           
         </View>
           
@@ -91,7 +112,6 @@ const styles = StyleSheet.create({
       borderColor: 'black',
       marginTop: 50,
       width: "100%",
-      alignSelf: "center",
       paddingHorizontal: 15,
       paddingTop: 10,
       paddingBottom: 15,
@@ -101,6 +121,7 @@ const styles = StyleSheet.create({
       shadowRadius: 4,
       elevation: 100
   },
+
   styleMiniCard: {
     backgroundColor: "#1e293b",
     marginTop:  20,
@@ -114,7 +135,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 3.0,
     shadowRadius: 4,
     elevation: 100
-    
-    
+  },
+  progracessStyle: {
+    backgroundColor: "#1e293b",
+    marginTop:  0,
+    borderRadius: 15,
+    width: "100%",
+    paddingTop: 10,
+    paddingHorizontal: 15,
+    paddingBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 3.0,
+    shadowRadius: 4,
+    elevation: 100
   }
 })
