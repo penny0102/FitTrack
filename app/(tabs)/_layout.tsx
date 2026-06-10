@@ -1,13 +1,13 @@
 import { Tabs } from "expo-router";
-import { House, ChartColumn, User } from "lucide-react-native";
+import {User, LayoutDashboard } from "lucide-react-native";
 
 export default function TabsLayout() {
   return (
     <Tabs screenOptions={{ headerShown: false, 
         tabBarBadgeStyle: {
-            backgroundColor : "#1e293b",
-            borderTopWidth: 0,
-            height: 70,
+          backgroundColor : "#1e293b",
+          borderTopWidth: 0,
+          height: 70,
           paddingBottom: 10,
           paddingTop: 10,
         },
@@ -19,17 +19,7 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <House color={color} size={size} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="secssion"
-        options={{
-          title: "secssion",
-          tabBarIcon: ({ color, size }) => (
-            <User  color={color} size={size} />
+            <LayoutDashboard color={color} size={size} />
           ),
         }}
       />
@@ -39,10 +29,21 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <User color={color} size={size} />
+            <User  color={color} size={size} />
           ),
         }}
       />
+      <Tabs.Screen
+        name="secssion"
+        options={{
+          href: null,
+          tabBarStyle: {
+          display: "none",
+        },
+        }}
+      />
+
+      
     </Tabs>
   );
 }

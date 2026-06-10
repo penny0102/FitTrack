@@ -1,7 +1,8 @@
-import { Text, View, StyleSheet } from "react-native";
-import {Zap, Footprints, MapPinned, Flame } from "lucide-react-native";
+import { Text, View, StyleSheet, TouchableOpacity  } from "react-native";
+import {Zap, Footprints, MapPinned, Flame, Play } from "lucide-react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Progress from 'react-native-progress';
+import { router } from "expo-router";
 
 export default function Index() {
   return (
@@ -33,7 +34,7 @@ export default function Index() {
           </Text>
             <View style={{paddingTop: 20}}>
               <Progress.Bar
-                progress={0.5}
+                progress={0.9}
                 width={300}
                 height={12}
                 borderRadius={10}
@@ -94,8 +95,13 @@ export default function Index() {
                 />
                 </View>
           </View>
-          
         </View>
+        <TouchableOpacity  style={styles.buttonStyle} onPress={() => router.push('/secssion')}>
+          <Play color="#000000" size={20}/>
+            <Text >
+                Start Session
+            </Text>
+        </TouchableOpacity >
           
     </SafeAreaView>
   );
@@ -149,5 +155,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 3.0,
     shadowRadius: 4,
     elevation: 100
+  },
+  buttonStyle: {
+    backgroundColor: "#22C55E",
+    marginTop: 40,
+    paddingVertical: 15,
+    borderRadius: 8,
+    width: "100%", shadowColor: "#000",
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 3.0,
+    shadowRadius: 4,
+    elevation: 100,
+    flexDirection: "row",
+    gap: 10,
+    justifyContent: "center",
+    
   }
 })
