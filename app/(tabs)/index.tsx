@@ -108,6 +108,9 @@ export default function Index() {
 }
 
 
+const Card = () => {
+
+}
 
 const styles = StyleSheet.create({
   cardStyle: {
@@ -121,11 +124,12 @@ const styles = StyleSheet.create({
       paddingHorizontal: 15,
       paddingTop: 10,
       paddingBottom: 15,
-      shadowColor: "#000",
+      shadowColor: "#050505",
       shadowOffset: {width: 2, height: 2},
       shadowOpacity: 3.0,
-      shadowRadius: 4,
-      elevation: 100
+      shadowRadius: 10,
+      elevation: 100 
+      
   },
 
   styleMiniCard: {
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     backgroundColor: "#22C55E",
-    marginTop: 40,
+    top: "10%",
     paddingVertical: 15,
     borderRadius: 8,
     width: "100%", shadowColor: "#000",

@@ -1,9 +1,75 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
-import {Zap, Footprints, Grid3x2, Gauge, Flame } from "lucide-react-native";
+import {Zap, Footprints, Grid3x2, Gauge, Flame, Pause, Square } from "lucide-react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState, useRef, useEffect } from 'react';
+import { router } from 'expo-router';
+import { Pedometer } from "expo-sensors";
+import { useStepsStore } from "@/script/useStepsStore";
+import { Platform, PermissionsAndroid } from "react-native";
+
+
+
 
 export default function secssion() {
+  const [seconds, setSeconds] = useState<number>(0);
+  const intervalRef = useRef<number | null>(null);
+
+  const steps = useStepsStore((state) => state.steps);
+  const setSteps = useStepsStore((state) => state.setSteps);
+
+  useEffect(() => {
+    async function perMision(){
+      if (Platform.OS === "android") {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
+      );
+    }
+    }
+    
+    let subscription: Pedometer.Subscription | null = null;
+
+    const start = async () => {
+      const isAvailable = await Pedometer.isAvailableAsync();
+      console.log(isAvailable)
+      if (isAvailable) {
+        subscription = Pedometer.watchStepCount((result: any) => {
+          console.log(result.steps)
+          setSteps(result.steps);
+        });
+        
+      }
+    };
+    perMision()
+    start();
+
+    
+  }, [setSteps]);
+
+  const startTimer = () => {
+    if (intervalRef.current !== null) return;
+
+    intervalRef.current = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000) as unknown as number;
+  };
+
+  const stopTimer = () => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      setSeconds(0)
+    }
+  };
+
+  const formatTime = (totalSeconds: number) => {
+    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+    const secs = String(totalSeconds % 60).padStart(2, "0");
+
+    return `${hours}:${minutes}:${secs}`;
+  };
+  
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -26,7 +92,7 @@ export default function secssion() {
           fontSize: 80,
           fontFamily: "Sprintura"
         }}>
-          10:20:99
+          {formatTime(seconds)}
         </Text>
         <View style={{
           flexDirection: "row",
@@ -41,7 +107,7 @@ export default function secssion() {
             <View style={{paddingTop: 0}}>
               <View style={{flexDirection: "row", gap: 7}}>
                 <Text style={{fontSize: 35}}>
-                  4.5
+                  0.0
                 </Text>
                 <Text style={{marginTop: 23}}>
                   km
@@ -60,7 +126,7 @@ export default function secssion() {
               
               <View style={{flexDirection: "row", gap: 7}}>
                 <Text style={{fontSize: 35}}>
-                  4.5
+                  0.0
                 </Text>
                 <Text style={{marginTop: 23}}>
                   km/h
@@ -92,21 +158,27 @@ export default function secssion() {
             </Text>
             <View style={{flexDirection: "row", gap: 7}}>
               <Text style={{fontSize: 30, color: "#d4d4d4", justifyContent: "center"}}>
-                240 
+                {steps} 
               </Text>
-              {/* <Text style={{paddingTop: 16}}>
-              </Text> */}
             </View>
         </View>
       </View>
-    
-      
-      
-      
-      
+      <View style={{flexDirection: "row", gap:20, top: "20%"}}>
+        {/* <TouchableOpacity style={styles.buttonCard} onPress={}>
+          <Pause size={20}/>
+        </TouchableOpacity> */}
+        <TouchableOpacity style={styles.buttonStartButton} onPress={() => {
+          stopTimer() 
+          router.push("/")
+        }}>
+          <Square size={20}/>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
+
+
 
 const styles = StyleSheet.create({
   cardStyles: {
@@ -122,5 +194,33 @@ const styles = StyleSheet.create({
     shadowOpacity: 3.0,
     shadowRadius: 4,
     elevation: 100
+  },
+  // buttonCard: {
+  //   backgroundColor: "#0566d9",
+  //   marginTop: 40,
+  //   paddingVertical: 15,
+  //   borderRadius: 8,
+  //   width: "64%", shadowColor: "#000",
+  //   shadowOffset: {width: 2, height: 2},
+  //   shadowOpacity: 3.0,
+  //   shadowRadius: 4,
+  //   elevation: 100,
+  //   flexDirection: "row",
+  //   gap: 10,
+  //   justifyContent: "center",
+  // },
+  buttonStartButton: {
+    backgroundColor: "#93000a",
+    marginTop: 40,
+    paddingVertical: 15,
+    borderRadius: 8,
+    width: "100%", shadowColor: "#000",
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 3.0,
+    shadowRadius: 4,
+    elevation: 100,
+    flexDirection: "row",
+    gap: 10,
+    justifyContent: "center",
   }
 })
