@@ -1,12 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
-import {Zap, Footprints, Grid3x2, Gauge, Flame, Pause, Square } from "lucide-react-native";
+import {Zap, Footprints, Grid3x2, Gauge, Flame, Pause, Square, Play } from "lucide-react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useRef, useEffect } from 'react';
 import { router } from 'expo-router';
 import { Pedometer } from "expo-sensors";
 import { useStepsStore } from "@/script/useStepsStore";
-import { Platform, PermissionsAndroid } from "react-native";
 
 
 
@@ -14,52 +13,54 @@ import { Platform, PermissionsAndroid } from "react-native";
 export default function secssion() {
   const [seconds, setSeconds] = useState<number>(0);
   const intervalRef = useRef<number | null>(null);
-
+  const showCard = [1, 2, 3, 4]
   const steps = useStepsStore((state) => state.steps);
   const setSteps = useStepsStore((state) => state.setSteps);
+  const [isClicked, setClick] = useState(false)
 
   useEffect(() => {
-    async function perMision(){
-      if (Platform.OS === "android") {
-      await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACTIVITY_RECOGNITION
-      );
-    }
-    }
+    // const getPermission = async () => {
+    //   const { status } = await Pedometer.requestPermissionsAsync()
+    //   if(!status) console.log("nonon")
+    // }
     
     let subscription: Pedometer.Subscription | null = null;
 
     const start = async () => {
       const isAvailable = await Pedometer.isAvailableAsync();
-      console.log(isAvailable)
       if (isAvailable) {
-        subscription = Pedometer.watchStepCount((result: any) => {
-          console.log(result.steps)
-          setSteps(result.steps);
+        
+        subscription = Pedometer.watchStepCount((data) => {
+          console.log(data.steps)
+          setSteps(data.steps);
         });
         
       }
     };
-    perMision()
+    // getPermission()
     start();
 
     
-  }, [setSteps]);
+  }, [steps]);
 
   const startTimer = () => {
     if (intervalRef.current !== null) return;
 
     intervalRef.current = setInterval(() => {
       setSeconds((prev) => prev + 1);
-    }, 1000) as unknown as number;
+    }, 1000);
   };
 
+  const reloadTimer = () =>{
+    stopTimer()
+    setSeconds(0)
+  }
+
   const stopTimer = () => {
-    if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-      setSeconds(0)
-    }
+    
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+   
   };
 
   const formatTime = (totalSeconds: number) => {
@@ -69,7 +70,7 @@ export default function secssion() {
 
     return `${hours}:${minutes}:${secs}`;
   };
-  
+ 
   return (
     <SafeAreaView style={{
       flex: 1,
@@ -154,7 +155,7 @@ export default function secssion() {
           <View style={styles.cardStyles}>
             <Footprints color="#ffaf9b" size={20}/>
             <Text style={{paddingTop: 5, color: "#9b9b9b"}}>
-              Calories
+              steps
             </Text>
             <View style={{flexDirection: "row", gap: 7}}>
               <Text style={{fontSize: 30, color: "#d4d4d4", justifyContent: "center"}}>
@@ -164,12 +165,32 @@ export default function secssion() {
         </View>
       </View>
       <View style={{flexDirection: "row", gap:20, top: "20%"}}>
-        {/* <TouchableOpacity style={styles.buttonCard} onPress={}>
-          <Pause size={20}/>
-        </TouchableOpacity> */}
+        <TouchableOpacity style={styles.buttonCard} onPress={() => {
+          
+          {
+            if(!isClicked) {
+              setClick(true)
+              startTimer()
+            }else{
+              setClick(false)
+              stopTimer()
+            }
+          }
+          
+
+        }}>
+          {isClicked ? (
+            <Play size={20}/>
+          ):(
+            <Pause size={20}/>
+          )}
+
+        </TouchableOpacity>
         <TouchableOpacity style={styles.buttonStartButton} onPress={() => {
-          stopTimer() 
+          reloadTimer()
           router.push("/")
+          setClick(false)
+          startTimer()
         }}>
           <Square size={20}/>
         </TouchableOpacity>
@@ -177,7 +198,6 @@ export default function secssion() {
     </SafeAreaView>
   )
 }
-
 
 
 const styles = StyleSheet.create({
@@ -195,26 +215,26 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 100
   },
-  // buttonCard: {
-  //   backgroundColor: "#0566d9",
-  //   marginTop: 40,
-  //   paddingVertical: 15,
-  //   borderRadius: 8,
-  //   width: "64%", shadowColor: "#000",
-  //   shadowOffset: {width: 2, height: 2},
-  //   shadowOpacity: 3.0,
-  //   shadowRadius: 4,
-  //   elevation: 100,
-  //   flexDirection: "row",
-  //   gap: 10,
-  //   justifyContent: "center",
-  // },
+  buttonCard: {
+    backgroundColor: "#0566d9",
+    marginTop: 40,
+    padding: 20,
+    borderRadius: 8,
+    width: "70%", shadowColor: "#000",
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 3.0,
+    shadowRadius: 4,
+    elevation: 100,
+    flexDirection: "row",
+    gap: 10,
+    justifyContent: "center",
+  },
   buttonStartButton: {
     backgroundColor: "#93000a",
     marginTop: 40,
-    paddingVertical: 15,
+    padding: 20,
     borderRadius: 8,
-    width: "100%", shadowColor: "#000",
+    width: "24%", shadowColor: "#000",
     shadowOffset: {width: 2, height: 2},
     shadowOpacity: 3.0,
     shadowRadius: 4,

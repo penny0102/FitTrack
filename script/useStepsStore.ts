@@ -13,6 +13,6 @@ export const useStepsStore = create<StepsState>((set: any) => ({
 
   addStep: () =>
     set((state: any) => ({
-      steps: state.steps + 1,
+      steps: state.steps,
     })),
 }));
