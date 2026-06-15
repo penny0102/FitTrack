@@ -18,7 +18,7 @@ export default function Index() {
       <View style={{flexDirection: "row", gap:7}}>
           <Zap color="#22C55E"/>
           <Text style={{color: "#22C55E", fontFamily: "Sprintura", fontSize: 20}}>
-            Performanes
+            Performane
           </Text>
         </View>
         <View style={styles.cardStyle}>
